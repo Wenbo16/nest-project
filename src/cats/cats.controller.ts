@@ -6,11 +6,15 @@ import {
   HttpStatus,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 // import { Cat } from './interfaces/cat.interface';
 import { ValidationPipe } from './validation.pipe';
+import { Roles } from 'src/decorators/roles.decorator';
+import { Role } from 'src/enums/role.enum';
+import { RolesGuard } from 'src/auth/roles.guard';
 
 @Controller('cats')
 export class CatsController {
@@ -24,6 +28,8 @@ export class CatsController {
   // }
 
   @Post()
+  @Roles(Role.Admin)
+  @UseGuards(RolesGuard)
   async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) {
     this.catsService.create(createCatDto);
   }
